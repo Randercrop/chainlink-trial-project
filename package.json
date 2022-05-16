@@ -10,7 +10,8 @@
     "build": "npm run clean && npx tsc",
     "clean": "rm -rf ./build",
     "test": "npm run test",
-    "docs": "typedoc --out docs ./src"
+    "docs": "typedoc --out docs ./src",
+    "generate": "npx tsc && ./build/cli/Cli.js deploy OCR2Aggregator"
   },
   "author": "Austin",
   "license": "ISC",

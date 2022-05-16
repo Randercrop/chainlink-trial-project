@@ -33,3 +33,9 @@ The tool's entrypoint will then be built into the `./build/cli` directory.
 
 ##### Step 4:
 Execute CLI commands by running `./build/cli/Cli.js deploy OCR2Aggregator`. 
+
+
+## Expansion
+##### Adding new contracts
+To add a new contract, add a new folder under `/src/contracts` with the contract code. 
+Then add the contract name and build path to `/src/data/contractToFileMap.json`. 
