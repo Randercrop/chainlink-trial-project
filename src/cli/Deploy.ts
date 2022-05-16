@@ -1,6 +1,7 @@
-import type { Arguments, CommandBuilder } from 'yargs';
-import { EthClient } from '../clients/EthClient';
-import contractToFileMap from '../data/contractToFileMap.json';
+import type { Arguments, CommandBuilder } from 'yargs'
+import { EthClient } from '../clients/EthClient'
+import contractToFileMap from '../data/contractToFileMap.json'
+import { checkProvidedContractExists } from './CliUtils'
 
 type deployCommandOptions = {
     contract: string;
@@ -15,39 +16,29 @@ export const builder: CommandBuilder<deployCommandOptions, deployCommandOptions>
 
 
 export const handler = (argv: Arguments<deployCommandOptions>): void => {
-    performArgumentValidation(argv)
     const { contract } = argv
+    checkProvidedContractExists(contract)
     deployContract(contract)
 };
 
-// This function only checks whether the contract name matches what's in /src/data/contractToFileMap.json
-const performArgumentValidation = (argv: Arguments<deployCommandOptions>) => {
-    const { contract } = argv
-    if (contractToFileMap[contract as keyof typeof contractToFileMap] === undefined) {
-        const availableContracts = Object.keys(contractToFileMap)
-        console.error(`That contract doesn't exist. Try again with ${availableContracts}`)
-        process.exit(0)
-    }
-}
-
-// Creates an 
+// Creates an ethereum client using default parameters in .env or parameters passed to the commandline
+// We then use the client to deploy the specified contract
 const deployContract = async (contract: string) => {
     let client = new EthClient()
-    const currentBlockNumber = await client.getBlockNumber()
-    console.log(currentBlockNumber)
-    let [abi, byteCode] = getAbiAndByteCodeFromContractName(contract)
-    await client.deployContract(abi, byteCode)
+
+    let [abi, byteCode, params] = getAbiAndByteCodeFromContractName(contract)
+    await client.deployContract(abi, byteCode, params)
 }
 
 // This function checks that the contract has been compiled via hardhat, then passes the Solidity JSON ABI from the build directory
 const getAbiAndByteCodeFromContractName = (contract: string) => {
-    const contractArtifactPath = contractToFileMap[contract as keyof typeof contractToFileMap] || ''
-    const contractArtifact = require(contractArtifactPath)
+    const contractData = contractToFileMap[contract as keyof typeof contractToFileMap] || ''
+    const contractArtifact = require(`../../${contractData.path}`)
 
     if (!contractArtifact['abi'] || !contractArtifact['bytecode']) {
         console.error(`That contract exists, but hasn't been compiled yet. Try running \`./build/cli/Cli.js compile ${contract}\``)
         process.exit(0)
     }
 
-    return [contractArtifact['abi'], contractArtifact['bytecode']]
+    return [contractArtifact['abi'], contractArtifact['bytecode'], contractData.constructorParams]
 }

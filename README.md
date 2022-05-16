@@ -36,6 +36,10 @@ Execute CLI commands by running `./build/cli/Cli.js deploy OCR2Aggregator`.
 
 
 ## Expansion
+##### Adding new commands to CLI tool
+We use yargs to manage our CLI. To add new commands, create a file under `./src/cli` with a 'command', 'builder', 'handler' export.
+Documentation: https://yargs.js.org/docs/
+
 ##### Adding new contracts
 To add a new contract, add a new folder under `/src/contracts` with the contract code. 
 Then add the contract name and build path to `/src/data/contractToFileMap.json`. 

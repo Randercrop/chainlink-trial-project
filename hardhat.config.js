@@ -12,7 +12,9 @@ module.exports = {
     artifacts: "./build/artifacts"  
   },
   networks: {
-    hardhat: {},
+    hardhat: {
+      blockGasLimit: 0x1fffffffffffff, 
+    },
     ropsten: {
       url: API_ENDPOINT,
       accounts: [`0x${METAMASK_PRIVATE_KEY}`]

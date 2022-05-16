@@ -15,9 +15,9 @@ export class EthClient {
         // this.infuraProvider = new ethers.providers.JsonRpcProvider(apiKey || API_ENDPOINT, network || 'ropsten')
         this.clientProvider = new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545/')
         this.clientSigner = this.clientProvider.getSigner()
-        console.log(this.clientProvider)
     }
 
+    // Used to get the current block number. Was used for testing to ensure that contract deployments work
     async getBlockNumber(): Promise<number> {
         const blockNumber = await this.clientProvider.getBlockNumber()
         return blockNumber
@@ -25,15 +25,13 @@ export class EthClient {
 
     // Deploys the smartcontract to using the abi and bytecode provided
     // contract parameters need to be passed in, but contracts will not have all the same parameters
-    async deployContract(abi: any[], byteCode: string, contractParameters?: any[]) {
-        const zeroAddress = "0x000000000000000000000000000000000000000000"
-        const constructorParams = [zeroAddress, 0, 20000, zeroAddress, zeroAddress, 5, "testDescription"]
+    async deployContract(abi: any[], byteCode: string, contractParameters?: any) {
 
         const contractFactory = new ethers.ContractFactory(abi, byteCode, this.clientSigner)
-        const deployedContract = await contractFactory.deploy(...constructorParams )
+        const deployedContract = await contractFactory.deploy(...contractParameters)
 
         console.log(deployedContract.address)
         await deployedContract.deployTransaction.wait()
-        await deployedContract.value()
+        console.log(await deployedContract.deployTransaction.wait())
     }
 }
