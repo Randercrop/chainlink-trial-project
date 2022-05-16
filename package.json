@@ -7,16 +7,15 @@
     "advanced-cli": "./bin/index.js"
   },
   "scripts": {
-    "build": "npm run clean && npx tsc",
+    "build": "npm run clean && npx tsc && chmod u+x ./build/cli/Cli.js",
     "clean": "rm -rf ./build",
     "test": "npm run test",
     "docs": "typedoc --out docs ./src",
-    "generate": "npx tsc && ./build/cli/Cli.js deploy OCR2Aggregator"
+    "compile": "npx tsc && chmod u+x ./build/cli/Cli.js"
   },
   "author": "Austin",
   "license": "ISC",
   "dependencies": {
-    "chalk": "^5.0.1",
     "dotenv": "^16.0.1",
     "ethers": "^5.6.5",
     "tslib": "^2.4.0",

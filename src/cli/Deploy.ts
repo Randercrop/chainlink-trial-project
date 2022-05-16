@@ -1,7 +1,8 @@
 import type { Arguments, CommandBuilder } from 'yargs'
 import { EthClient } from '../clients/EthClient'
 import contractToFileMap from '../data/contractToFileMap.json'
-import { checkProvidedContractExists } from './CliUtils'
+import { checkProvidedContractExists, getUserParameters } from '../utils/CliUtils'
+import fs from 'fs'
 
 type deployCommandOptions = {
     contract: string;
@@ -18,20 +19,23 @@ export const builder: CommandBuilder<deployCommandOptions, deployCommandOptions>
 export const handler = (argv: Arguments<deployCommandOptions>): void => {
     const { contract } = argv
     checkProvidedContractExists(contract)
-    deployContract(contract)
+
+    getParametersAndDeployContract(contract)
 };
 
 // Creates an ethereum client using default parameters in .env or parameters passed to the commandline
 // We then use the client to deploy the specified contract
-const deployContract = async (contract: string) => {
+const getParametersAndDeployContract = async (contract: string) => {
     let client = new EthClient()
 
-    let [abi, byteCode, params] = getAbiAndByteCodeFromContractName(contract)
-    await client.deployContract(abi, byteCode, params)
+    let [abi, byteCode, params] = await getContractInfo(contract)
+    let txnReceipt = await client.deployContract(abi, byteCode, params)
+    writeToFile(JSON.stringify(txnReceipt), contract)
+    console.log(txnReceipt)
 }
 
 // This function checks that the contract has been compiled via hardhat, then passes the Solidity JSON ABI from the build directory
-const getAbiAndByteCodeFromContractName = (contract: string) => {
+const getContractInfo = async (contract: string) => {
     const contractData = contractToFileMap[contract as keyof typeof contractToFileMap] || ''
     const contractArtifact = require(`../../${contractData.path}`)
 
@@ -40,5 +44,15 @@ const getAbiAndByteCodeFromContractName = (contract: string) => {
         process.exit(0)
     }
 
-    return [contractArtifact['abi'], contractArtifact['bytecode'], contractData.constructorParams]
+    const userConstructorParams = await getUserParameters(contractData.constructorParams)
+
+    return [contractArtifact['abi'], contractArtifact['bytecode'], userConstructorParams]
+}
+
+const writeToFile = (content: string, contractName: string) => {
+    console.log('writing to file')
+    const fileToWrite = `${contractName}data.json`
+    fs.writeFile(fileToWrite, content, (error) => {
+        error && console.log('error: ', error)
+    })
 }

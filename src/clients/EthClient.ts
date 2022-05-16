@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import 'dotenv/config';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import * as fs from 'fs'
 
 
 const { API_ENDPOINT, METAMASK_PRIVATE_KEY, PROJECT_SECRET_KEY } = process.env;
@@ -30,8 +31,13 @@ export class EthClient {
         const contractFactory = new ethers.ContractFactory(abi, byteCode, this.clientSigner)
         const deployedContract = await contractFactory.deploy(...contractParameters)
 
-        console.log(deployedContract.address)
-        await deployedContract.deployTransaction.wait()
-        console.log(await deployedContract.deployTransaction.wait())
+        let txnReceipt = await deployedContract.deployTransaction.wait()
+        return txnReceipt
+    }
+
+    storeContractInformation(contractInfo: string) {
+        const dataStoreFile = '../../contractContent.json'
+
+        fs.writeFile(dataStoreFile, contractInfo, err => err && console.log(err))
     }
 }

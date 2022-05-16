@@ -1,14 +1,18 @@
 {
     "ConfirmedOwnerWithProposal": {
         "path": "build/artifacts/src/contracts/OCR2Aggregator/ConfirmedOwnerWithProposal.sol/ConfirmedOwnerWithProposal.json",
-        "constructorParams": ["0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266", "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"]
+        "constructorParams": ["newOwnerAddress", "pendingOwnerAddress"]
     },
     "OCR2Aggregator": {
        "path": "build/artifacts/src/contracts/OCR2Aggregator/OCR2Aggregator.sol/OCR2Aggregator.json",
-       "constructorParams": ["0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266", 0, 20000, "0x70997970c51812dc3a010c7d01b50e0d17dc79c8", "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc", 5, "testDescription"]
+       "constructorParams": ["linkContractAddress", "minAnswer", "maxAnswer", "billingAccessController", "requesterAccessController", "decimals", "description"]
     },
     "AccessControlledOCR2Aggregator": {
         "path": "build/artifacts/src/contracts/OCR2Aggregator/AccessControlledOCR2Aggregator.sol/AccessControlledOCR2Aggregator.json",
+        "constructorParams": ["linkContractAddress", "minAnswer", "maxAnswer", "billingAccessController", "requesterAccessController", "decimals", "description"]
+    },
+    "LinkToken": {
+        "path": "build/artifacts/src/contracts/LinkToken/LinkToken.sol/LinkToken.json",
         "constructorParams": []
     }
 }
