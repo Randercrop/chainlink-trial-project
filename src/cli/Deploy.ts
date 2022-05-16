@@ -30,7 +30,7 @@ const getParametersAndDeployContract = async (contract: string) => {
 
     let [abi, byteCode, params] = await getContractInfo(contract)
     let txnReceipt = await client.deployContract(abi, byteCode, params)
-    writeToFile(JSON.stringify(txnReceipt), contract)
+    writeToFile(JSON.stringify({userParms: params, ...txnReceipt}), contract)
     console.log(txnReceipt)
 }
 
@@ -51,7 +51,7 @@ const getContractInfo = async (contract: string) => {
 
 const writeToFile = (content: string, contractName: string) => {
     console.log('writing to file')
-    const fileToWrite = `${contractName}data.json`
+    const fileToWrite = `${contractName}TransactionReceipt.json`
     fs.writeFile(fileToWrite, content, (error) => {
         error && console.log('error: ', error)
     })
