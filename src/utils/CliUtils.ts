@@ -28,19 +28,18 @@ export function checkProvidedContractExists (contract: string) {
     }
 }
 
-export async function getUserParameters(parameters: string[]) {
+export async function getUserParameters(parameters: string[]): Promise<string[]> {
     let userResponse: string[] = []
 
     for (let i = 0; i < parameters.length; i++) {
-        userResponse.push(await askQuestion(`please provide the ${parameters[i]}: `))
+        userResponse.push(await askQuestion(`Please provide the ${parameters[i]}: `))
     }
 
-    console.log(userResponse)
     return userResponse
 }
 
 // this creates a new interface each time, probably optimizable
-async function askQuestion(query: string): Promise<string> {
+export async function askQuestion(query: string): Promise<string> {
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
@@ -50,4 +49,16 @@ async function askQuestion(query: string): Promise<string> {
         rl.close();
         resolve(ans);
     }))
+}
+
+export async function getContractFunctionToCall(contractFunctions: string[]): Promise<string> {
+    const question = `\nChoose a function from the following list (case sensitive) \n${contractFunctions.join(' ')} \n`
+
+    let response = await askQuestion(question)
+    if (contractFunctions.indexOf(response) < 0) { 
+        console.error('invalid function name')
+        process.exit(0)
+    }
+
+    return response
 }

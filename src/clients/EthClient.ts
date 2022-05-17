@@ -38,6 +38,6 @@ export class EthClient {
     storeContractInformation(contractInfo: string) {
         const dataStoreFile = '../../contractContent.json'
 
-        fs.writeFile(dataStoreFile, contractInfo, err => err && console.log(err))
+        fs.writeFile(dataStoreFile, contractInfo, err => err && console.error(err))
     }
 }
