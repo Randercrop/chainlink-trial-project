@@ -3,3 +3,4 @@
 .env
 /git
 *TransactionReceipt.json
+/src/scripts

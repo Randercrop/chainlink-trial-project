@@ -31,10 +31,10 @@ module.exports = {
   },
   
   networks: {
-    hardhat: {
-      blockGasLimit: 0x1fffffffffffff, 
-      allowUnlimitedContractSize: true,
-    },
+    // hardhat: {
+    //   blockGasLimit: 0x1fffffffffffff, 
+    //   allowUnlimitedContractSize: true,
+    // },
     ropsten: {
       url: API_ENDPOINT,
       accounts: [`0x${METAMASK_PRIVATE_KEY}`]

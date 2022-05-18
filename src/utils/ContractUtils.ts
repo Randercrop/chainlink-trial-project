@@ -59,7 +59,6 @@ export async function getContractAddress(contract: string): Promise<string> {
         const txnReceipt = require(txnReceiptFile)
         return txnReceipt['contractAddress']
     } catch (err) { 
-        console.error(`Transaction receipt for the specified contract not found.`, err)
-        process.exit(0)
+        return await askQuestion('Transaction receipt for the specified contract not found. You can enter it')
     }
 }

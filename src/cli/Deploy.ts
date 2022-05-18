@@ -28,6 +28,7 @@ const getParametersAndDeployContract = async (contract: string) => {
     let client = new EthClient()
 
     let [abi, byteCode, params] = await getContractInfo(contract)
+    console.log(params)
     let txnReceipt = await client.deployContract(abi, byteCode, params)
     writeToFile(JSON.stringify({userParams: params, ...txnReceipt}), contract)
 }
@@ -42,9 +43,12 @@ const getContractInfo = async (contract: string) => {
     return [abi, bytecode, userProvidedConstructorParams]
 }
 
+// Write the transaction receipt to `root/<contractName>TransactionReceipt.json`.
+// We also include the user parameteres into the json
+// This transaction receipt json is then used later for determining contract address when calling contract functions
 const writeToFile = (content: string, contractName: string) => {
     const fileToWrite = `${contractName}TransactionReceipt.json`
     fs.writeFile(fileToWrite, content, (error) => {
-        error && console.log('error: ', error)
+        error && console.error('error: ', error)
     })
 }

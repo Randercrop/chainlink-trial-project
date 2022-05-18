@@ -1,4 +1,3 @@
-import { Arguments, number, string } from 'yargs'
 import contractToFileMap from '../data/contractToFileMap.json'
 import readline from 'readline'
 
@@ -28,7 +27,9 @@ export function checkProvidedContractExists (contract: string) {
     }
 }
 
+// Ask the user for a list of inputs. Currenlty used for contract function parameters
 export async function getUserParameters(parameters: string[]): Promise<string[]> {
+    if (parameters.length < 1) { return Promise.resolve([]) }
     let userResponse: string[] = []
 
     for (let i = 0; i < parameters.length; i++) {
@@ -38,7 +39,7 @@ export async function getUserParameters(parameters: string[]): Promise<string[]>
     return userResponse
 }
 
-// this creates a new interface each time, probably optimizable
+// this creates a new RL interface each time, probably optimizable
 export async function askQuestion(query: string): Promise<string> {
     const rl = readline.createInterface({
         input: process.stdin,
@@ -51,8 +52,9 @@ export async function askQuestion(query: string): Promise<string> {
     }))
 }
 
+// Display the list of all contracts. Asks the user which one they want to call
 export async function getContractFunctionToCall(contractFunctions: string[]): Promise<string> {
-    const question = `\nChoose a function from the following list (case sensitive) \n${contractFunctions.join(' ')} \n`
+    const question = `\nChoose a function from the following list (case sensitive) \n${contractFunctions.join('\n')} \n\n`
 
     let response = await askQuestion(question)
     if (contractFunctions.indexOf(response) < 0) { 
@@ -61,4 +63,8 @@ export async function getContractFunctionToCall(contractFunctions: string[]): Pr
     }
 
     return response
+}
+
+export async function getUserProvidedAddress(): Promise<string> {
+    return await askQuestion('What address would you like to sign from?  ')
 }
