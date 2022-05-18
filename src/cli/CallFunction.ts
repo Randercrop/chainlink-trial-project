@@ -1,6 +1,8 @@
 import type { Arguments, CommandBuilder } from 'yargs'
-import { EthClient } from '../clients/EthClient';
-import { checkProvidedContractExists, getContractFunctionToCall as getUserProvidedContractFunction, getUserParameters, getUserProvidedAddress } from '../utils/CliUtils'
+import { EthClient } from '../clients/EthClient'
+import { checkProvidedContractExists, 
+        getContractFunctionToCall as getUserProvidedContractFunction, 
+        getUserParameters } from '../utils/CliUtils'
 import { getAbiAndBytecodeFromContractName, 
         getAllFunctionsFromAbi as getAllContractFunctionsFromAbi, 
         getContractAddress, 
@@ -27,13 +29,10 @@ export const handler = async (argv: Arguments<CallFunctionCommandOptions>) => {
     const contractAddress = await getContractAddress(contract)
     const [abi, functionToCall, userProvidedParameters] = await getAbiAndFunctionParameters(contract)
 
-    // ask the user which signer they want to call the function from. If not provided, it defaults to the first local address
-    const callerAddress = await getUserProvidedAddress() || undefined
-
-    const client = new EthClient(undefined, undefined, callerAddress)
-    let response = client.callContractFunction(abi, functionToCall, contractAddress, userProvidedParameters)
+    const client = new EthClient()
+    let response = await client.callContractFunction(abi, functionToCall, contractAddress, userProvidedParameters)
     
-    console.log('response: ', response)
+    console.log(response)    
 };
 
 const getAbiAndFunctionParameters = async (contract: string) => { 

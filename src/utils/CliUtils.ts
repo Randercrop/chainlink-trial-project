@@ -33,7 +33,7 @@ export async function getUserParameters(parameters: string[]): Promise<string[]>
     let userResponse: string[] = []
 
     for (let i = 0; i < parameters.length; i++) {
-        userResponse.push(await askQuestion(`Please provide the ${parameters[i]}: `))
+        userResponse.push(await askQuestion(`Please provide the '${parameters[i]}' parameter: `))
     }
 
     return userResponse

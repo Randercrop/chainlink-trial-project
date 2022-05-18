@@ -9,14 +9,12 @@ Requirements:
 
 ## Usage
 ##### Step 1: 
-Create a new Infura application and add the configuration to a .env file in the root directory.
+Create a new Infura/Alchemy application and add the configuration to a .env file in the root directory.
 The .env file should look like this:
 ```
-API_ENDPOINT="https://ropsten.infura.io/v3/<infura project api link>"
+API_ENDPOINT="https://rinkeby.infura.io/v3/<infura project api link>"
 METAMASK_PRIVATE_KEY="<metamask private key>"
-PROJECT_SECRET_KEY="<infura project secret key>"
 ```
-
 
 
 ##### Step 2:
@@ -32,8 +30,15 @@ The tool's entrypoint will then be built into the `./build/cli` directory.
 
 
 ##### Step 4:
-Execute CLI commands by running `./build/cli/Cli.js deploy OCR2Aggregator`. 
+Execute CLI commands by running `./build/cli/Cli.js <command> <contract>`.
+ - ex: `./build/cli/Cli.js deploy OCR2Aggregator`
+ - ex: `./build/cli/Cli.js call-contract-function OCR2Aggregator`
+ - If deploying the contract or calling a contract function requires parameters, the CLI will then ask you to provide those.
+ - Currently this CLI only supports using one wallet address at a time. To change the signing walelt, update your private key the .env file
 
+
+##### Step 5:
+Verify using the Rinkeby transaction explorer that the function calls have succeeded: `https://rinkeby.etherscan.io/`
 
 ## Expansion
 ##### Adding new commands to CLI tool
@@ -43,3 +48,10 @@ Documentation: https://yargs.js.org/docs/
 ##### Adding new contracts
 To add a new contract, add a new folder under `/src/contracts` with the contract code. 
 Then add the contract name and build path to `/src/data/contractToFileMap.json`. 
+
+##### Support multiple addresses simultaneously
+We could allow the user to add more private keys into their .env file, then allow the user to select which address to sign with when performing a transaction or executing a function call
+
+##### call-contract-function
+We can take in the contract name as part of the initial cli argument, rather than having the user type it out. This is more in line with other CLI tools
+

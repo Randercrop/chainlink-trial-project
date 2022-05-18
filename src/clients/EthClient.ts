@@ -1,30 +1,44 @@
-import { Contract, ethers } from 'ethers';
-import 'dotenv/config';
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { Contract, ethers, Signer } from 'ethers'
+import 'dotenv/config'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import * as fs from 'fs'
-import { SolidityAbiFormat } from '../utils/ContractUtils';
+import { SolidityAbiFormat } from '../utils/ContractUtils'
+import { getUserProvidedAddress } from '../utils/CliUtils'
 
 
-const { API_ENDPOINT, METAMASK_PRIVATE_KEY, PROJECT_SECRET_KEY } = process.env;
+const { API_ENDPOINT, METAMASK_PRIVATE_KEY } = process.env;
 
 export class EthClient {
     public clientProvider: JsonRpcProvider
-    public clientSigner: JsonRpcSigner
+    public clientSigner: Signer
 
     // Construct an Infura client using parameters passed to the constructor
     // if no parameters are passed, default to ropsten and whatever endpoint is provided in the .env file
     constructor(apiKey?: string, network?: string, signerAddress?: string) {
         // uncomment this line to deploy locally
-        // this.clientProvider = new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545/')
+        this.clientProvider = new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545/')
 
-        this.clientProvider = new ethers.providers.JsonRpcProvider(apiKey || API_ENDPOINT, network || 'rinkeby')
-        this.clientSigner = this.clientProvider.getSigner(signerAddress)
+        // this.clientProvider = new ethers.providers.JsonRpcProvider(apiKey || API_ENDPOINT, network || 'rinkeby')
+
+
+        // Tests for whether we're connected to local node with ':' port number or test net. Can be improved
+        if (METAMASK_PRIVATE_KEY && this.clientProvider.connection.url.includes(':')) {
+            this.clientSigner = new ethers.Wallet(METAMASK_PRIVATE_KEY, this.clientProvider)
+        } else {
+            this.clientSigner = this.clientProvider.getSigner()
+            this.getLocalSigner()
+        }
     }
 
     // Used to get the current block number. Was used for testing to ensure that contract deployments work
     async getBlockNumber(): Promise<number> {
         const blockNumber = await this.clientProvider.getBlockNumber()
         return blockNumber
+    }
+
+    async getLocalSigner() {
+        let address = await getUserProvidedAddress() || undefined
+        this.clientSigner = this.clientProvider.getSigner(address)
     }
 
     // Deploys the smartcontract to using the abi and bytecode provided
@@ -39,7 +53,7 @@ export class EthClient {
         return txnReceipt
     }
 
-    static createContractInstance(address: string, abi: SolidityAbiFormat[], signerOrProvider: JsonRpcProvider | JsonRpcSigner): Contract { 
+    static createContractInstance(address: string, abi: SolidityAbiFormat[], signerOrProvider: JsonRpcProvider | Signer): Contract { 
         return new ethers.Contract(address, abi, signerOrProvider)
     }
 
