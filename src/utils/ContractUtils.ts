@@ -20,6 +20,7 @@ export type ContractFunctionsMap = {
     [key: string]: SolidityAbiFormat
 }
 
+// This references the hardcoded build path in ./src/data/contractToFileMap and pulls the abi/bytecode from that path
 export function getAbiAndBytecodeFromContractName(contract: string) {
     const contractData = getContractMetadata(contract)
     const contractArtifact = require(`../../${contractData.path}`)
@@ -35,11 +36,13 @@ function getContractMetadata(contract: string) {
     return contractToFileMap[contract as keyof typeof contractToFileMap]
 }
 
+// hardcoded parameters needed to deploy the contract. We can probably pull these from the abi
 export function getRequiredParamsForContract(contract: string) {
     const contractData = getContractMetadata(contract)
     return contractData.constructorParams
 }
 
+// Iterates through the abi and creates the ContractFunctionsMap
 export function getAllFunctionsFromAbi(abi: SolidityAbiFormat[]): ContractFunctionsMap {
     let allFunctions: ContractFunctionsMap = {}
     abi.forEach((callInterface: SolidityAbiFormat) => {
@@ -59,6 +62,6 @@ export async function getContractAddress(contract: string): Promise<string> {
         const txnReceipt = require(txnReceiptFile)
         return txnReceipt['contractAddress']
     } catch (err) { 
-        return await askQuestion('Transaction receipt for the specified contract not found. You can enter it')
+        return await askQuestion('Transaction receipt for the specified contract not found. You can enter it:  ')
     }
 }

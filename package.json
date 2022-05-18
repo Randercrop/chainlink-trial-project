@@ -7,11 +7,13 @@
     "advanced-cli": "./bin/index.js"
   },
   "scripts": {
-    "build": "npm run clean && npx tsc && chmod u+x ./build/cli/Cli.js",
+    "buildSolidity": "npm run clean && npx hardhat compile",
     "clean": "rm -rf ./build && rm ./*TransactionReceipt.json",
     "test": "npm run test",
     "docs": "typedoc --out docs ./src",
-    "compile": "npx tsc && chmod u+x ./build/cli/Cli.js"
+    "compile": "npx tsc && chmod u+x ./build/cli/Cli.js",
+    "deployOCR2": "./build/cli/Cli.js deploy OCR2Aggregator",
+    "callOCR2Functions": "./build/cli/Cli.js call-contract-function OCR2Aggregator"
   },
   "author": "Austin",
   "license": "ISC",

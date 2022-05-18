@@ -1,23 +1,7 @@
 import contractToFileMap from '../data/contractToFileMap.json'
 import readline from 'readline'
 
-type OCR2AggregatorConstructor = {
-    linkContractAddress: string,
-    minAnswer: number,
-    maxAnswer: number,
-    billingAccessController: string,
-    requesterAccessController: string,
-    decimals: number,
-    description: string
-}
-
-type ConfirmedOwnerWithProposal = {
-    newOwner: string,
-    pendingOwner: string    
-}
-
-
-// This function only checks whether the contract name matches what's in /src/data/contractToFileMap.json
+// This function only checks whether the contract name matches the list in /src/data/contractToFileMap.json
 export function checkProvidedContractExists (contract: string) {
     if (contractToFileMap[contract as keyof typeof contractToFileMap] === undefined) {
         const availableContracts = Object.keys(contractToFileMap).join('\t')
@@ -27,7 +11,7 @@ export function checkProvidedContractExists (contract: string) {
     }
 }
 
-// Ask the user for a list of inputs. Currenlty used for contract function parameters
+// Ask the user for a list of inputs
 export async function getUserParameters(parameters: string[]): Promise<string[]> {
     if (parameters.length < 1) { return Promise.resolve([]) }
     let userResponse: string[] = []
@@ -52,7 +36,7 @@ export async function askQuestion(query: string): Promise<string> {
     }))
 }
 
-// Display the list of all contracts. Asks the user which one they want to call
+// Display the list of all functions on the contract. Asks the user which one they want to call
 export async function getContractFunctionToCall(contractFunctions: string[]): Promise<string> {
     const question = `\nChoose a function from the following list (case sensitive) \n${contractFunctions.join('\n')} \n\n`
 
