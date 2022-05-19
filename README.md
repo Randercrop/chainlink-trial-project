@@ -66,7 +66,6 @@ We could allow the user to add more private keys into their .env file, then allo
 ## Nice to Haves
 ##### call-contract-function
 - We can take in the contract name as part of the initial cli argument, rather than having the user type it out. This is more in line with other CLI tools
-- We can return a link to etherscan to see the function execution
 - Function outputs can be appended to some sort of log file
 - Allow user to provide an ABI. We allow them to provide contract address already
 
@@ -74,8 +73,7 @@ We could allow the user to add more private keys into their .env file, then allo
 ##### deploy
 - When taking deployment contract parameters, we can get the list of required parameters from the abi. I hardcoded because the list was small and the abi was less descriptive.
 - Running the deploy command with an option can tell the script to run hardhat compile prior to deploying
-- We can return a link to etherscan where we can see the deployment
-
+- We should move the transaction receipt file into ./build
 
 ##### compile
 - Take a parameter to determine which contract to compile. Currnetly we compile all solidity files in the project

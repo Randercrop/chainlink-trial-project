@@ -8,7 +8,7 @@
   },
   "scripts": {
     "buildSolidity": "npm run clean && npx hardhat compile",
-    "clean": "rm -rf ./build && rm ./*TransactionReceipt.json",
+    "clean": "rm -rf ./build",
     "test": "npm run test",
     "docs": "typedoc --out docs ./src",
     "compile": "npx tsc && chmod u+x ./build/cli/Cli.js",

@@ -40,11 +40,23 @@ const getParametersAndCallContractFunction = async (contract: string) => {
     const [abi, functionToCall, userProvidedParameters] = await getAbiAndFunctionParameters(contract)
 
     const client = new EthClient()
-    let response = await client.callContractFunction(abi, functionToCall, contractAddress, userProvidedParameters)
+    try {
+        let response = await client.callContractFunction(abi, functionToCall, contractAddress, userProvidedParameters)
     
-    // response only holds the pre-confirmation response. If we want to see the output logs, we need to call response.wait()
-    // We would write to an external log here
-    console.log(response)
+        // response only holds the pre-confirmation response. If we want to see the output logs, we need to call response.wait()
+        // We would write to an external log here
+        if (response.wait !== undefined) { 
+            let res = await response.wait()
+            console.log(res)
+            console.log(`view on etherscan! https://rinkeby.etherscan.io/tx/${res.transactionHash}`)
+        } else {
+            console.log(response)
+        }
+    } catch (err) {
+        console.error(err)
+        process.exit(0)
+    }
+    
 }
 
 const getAbiAndFunctionParameters = async (contract: string) => { 

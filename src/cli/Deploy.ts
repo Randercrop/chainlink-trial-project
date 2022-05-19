@@ -25,12 +25,17 @@ export const handler = (argv: Arguments<deployCommandOptions>): void => {
 // Creates an ethereum client using default parameters in .env or parameters passed to the commandline
 // We then use the client to deploy the specified contract
 const getParametersAndDeployContract = async (contract: string) => {
-    let client = new EthClient()
+    try {
+        let client = new EthClient()
 
-    let [abi, byteCode, params] = await getContractInfo(contract)
-    console.log(params)
-    let txnReceipt = await client.deployContract(abi, byteCode, params)
-    writeToFile(JSON.stringify({userParams: params, ...txnReceipt}), contract)
+        let [abi, byteCode, params] = await getContractInfo(contract)
+        let txnReceipt = await client.deployContract(abi, byteCode, params)
+        writeToFile(JSON.stringify({userParams: params, ...txnReceipt}), contract)
+        console.log(`View on etherscan: https://rinkeby.etherscan.io/address/${txnReceipt.contractAddress}/`)
+    } catch (err) { 
+        console.error(err)
+        process.exit(0)
+    }
 }
 
 // This function checks that the contract has been compiled via hardhat, then passes the Solidity JSON ABI from the build directory
